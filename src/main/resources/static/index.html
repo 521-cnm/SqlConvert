@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL转换</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f7f7f7;
+    }
+
+    .dropdown-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-select {
+      padding: 10px 20px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      appearance: none;
+      background-color: #fff;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .dropdown-select:focus {
+      border-color: #007bff;
+    }
+
+    .upload-button, .convert-button {
+      padding: 10px 20px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 4px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .upload-button:hover, .convert-button:hover {
+      background-color: #0056b3;
+    }
+
+    .file-input {
+      display: none; /* 隐藏文件输入 */
+    }
+
+    .success {
+      background-color: #28a745; /* 成功时的按钮颜色 */
+      pointer-events: none; /* 防止再次点击 */
+    }
+  </style>
+</head>
+<body>
+
+<div class="dropdown-container">
+<!--  <select class="dropdown-select" id="mySelect">
+    <option value="">请选择一个选项</option>
+    <option value="option1">选项 1</option>
+    <option value="option2">选项 2</option>
+    <option value="option3">选项 3</option>
+  </select>-->
+
+  <label class="upload-button" for="fileInput" id="uploadLabel">上传文件</label>
+  <input type="file" id="fileInput" class="file-input" />
+
+  <button class="convert-button" id="convertButton">转换</button>
+</div>
+
+<script>
+  document.getElementById('fileInput').addEventListener('change', function() {
+    var fileInput = document.getElementById('fileInput');
+    var file = fileInput.files[0]; // 获取选择的文件
+
+    if (file) {
+      // 文件已选择，更新上传按钮文本
+      document.getElementById('uploadLabel').textContent = '已上传成功';
+      //document.getElementById('uploadLabel').classList.add('success');
+    }
+  });
+
+  document.getElementById('convertButton').addEventListener('click', function() {
+    //var select = document.getElementById('mySelect');
+   // var selectedValue = select.value;
+    var fileInput = document.getElementById('fileInput');
+    var file = fileInput.files[0]; // 获取选择的文件
+
+    if ( file) {
+      var formData = new FormData(); // 创建一个FormData对象
+      //formData.append('selectedValue', selectedValue); // 添加下拉框的值
+      formData.append('file', file); // 添加文件
+
+      fetch('http://localhost:8080/convert', {
+        method: 'POST',
+        body: formData // 直接发送FormData对象
+      }).then(response => {
+        // 检查响应状态
+        if (!response.ok) {
+          throw new Error('网络连接失败' + response.statusText);
+        }
+        return response.json(); // 解析JSON响应体
+      }).then(data => {
+          console.log('Success:', data);
+                // 这里可以处理后端返回的数据
+        alert(data.msg);
+      }).catch((error) => {
+        console.error('Error:', error);
+      });
+    } else {
+      alert('请上传文件');
+    }
+  });
+</script>
+
+</body>
+</html>
