@@ -52,7 +52,7 @@ public class SqlConvertServiceImpl implements SqlConvertService {
             sqlTemp.setLength(sqlTemp.length()-3);
             sqlTemp.append(") VALUES (");
             insert.append(sqlTemp);
-            for(int i =2; i<sheet.getLastRowNum();i++){
+            for(int i =2; i<=sheet.getLastRowNum();i++){
                 Row row = sheet.getRow(i);
                 for (int j = 0; j < colNum; j++){
                     Cell cell = row.getCell(j);
